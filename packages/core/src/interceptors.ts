@@ -1,9 +1,9 @@
 import {ReqsterResponse, ReqsterRequestSettings} from "./index";
 
 export type RequestInterceptor = (endpoint: string, settings: ReqsterRequestSettings) => Promise<void>;
-export type ResponseInterceptor = (endpoint: string, settings: ReqsterRequestSettings, response: ReqsterResponse) => Promise<AfterMiddlewareResultEnum>;
+export type ResponseInterceptor = (endpoint: string, settings: ReqsterRequestSettings, response: ReqsterResponse) => Promise<ResponseInterceptorResultEnum>;
 
-export enum AfterMiddlewareResultEnum {
+export enum ResponseInterceptorResultEnum {
     NOTHING = 0,
     RETRY = 1,
 }

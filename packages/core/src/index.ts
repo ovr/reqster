@@ -1,4 +1,4 @@
-import {AfterMiddlewareResultEnum, InterceptorsManager, RequestInterceptor, ResponseInterceptor} from './interceptors';
+import {ResponseInterceptorResultEnum, InterceptorsManager, RequestInterceptor, ResponseInterceptor} from './interceptors';
 
 export interface ReqsterRequestSettings {
     method?: string;
@@ -20,8 +20,8 @@ export interface ReqsterResponse {
     text(): Promise<string>;
 }
 
-export class Client {
-    protected interceptors = {
+class Client {
+    public readonly interceptors = {
         request: new InterceptorsManager<RequestInterceptor>(),
         response: new InterceptorsManager<ResponseInterceptor>(),
     };
@@ -52,7 +52,7 @@ export class Client {
 
         for (const after of this.interceptors.response.interceptors) {
             const middlewareResult = await after(url, parameters, response);
-            if (middlewareResult === AfterMiddlewareResultEnum.RETRY) {
+            if (middlewareResult === ResponseInterceptorResultEnum.RETRY) {
                 return this.request(endpoint, settings);
             }
         }
@@ -115,4 +115,9 @@ export class Client {
             ...settings
         });
     }
+}
+
+export {
+    Client,
+    ResponseInterceptorResultEnum
 }
