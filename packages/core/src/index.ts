@@ -78,7 +78,7 @@ export class Client {
         }
     }
 
-    public async post<D = any, T = any>(endpoint: string, data?: D, settings?: RequestInit): Promise<T> {
+    public async post<D = any, T = any>(endpoint: string, data?: D, settings?: ReqsterRequestSettings): Promise<T> {
         return this.request<T>(endpoint, {
             method: 'POST',
             data,
@@ -86,14 +86,14 @@ export class Client {
         });
     }
 
-    public async get<T = any>(endpoint: string, settings?: RequestInit): Promise<T> {
+    public async get<T = any>(endpoint: string, settings?: ReqsterRequestSettings): Promise<T> {
         return this.request<T>(endpoint, {
             method: 'GET',
             ...settings
         });
     }
 
-    public async put<D = any, T = any>(endpoint: string, data?: D, settings?: RequestInit): Promise<T> {
+    public async put<D = any, T = any>(endpoint: string, data?: D, settings?: ReqsterRequestSettings): Promise<T> {
         return this.request<T>(endpoint, {
             method: 'PUT',
             data,
@@ -101,7 +101,7 @@ export class Client {
         });
     }
 
-    public async patch<D = any, T = any>(endpoint: string, data?: D, settings?: RequestInit): Promise<T> {
+    public async patch<D = any, T = any>(endpoint: string, data?: D, settings?: ReqsterRequestSettings): Promise<T> {
         return this.request<T>(endpoint, {
             method: 'PATCH',
             data,
