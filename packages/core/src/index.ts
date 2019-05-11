@@ -11,13 +11,14 @@ export type ReqsterSettings = {
     }
 };
 
-export type ReqsterResponse = {
-    ok: boolean,
-    status: number,
-    clone: () => ReqsterResponse,
-    json: () => Promise<any>
-    text: () => Promise<string>
-};
+export interface ReqsterResponse {
+    ok: boolean;
+    status: number;
+
+    clone(): ReqsterResponse;
+    json(): Promise<any>;
+    text(): Promise<string>;
+}
 
 export class Client {
     protected interceptors = {
