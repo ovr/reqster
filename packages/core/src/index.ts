@@ -6,9 +6,9 @@ export interface ReqsterRequestSettings {
 }
 
 export type ReqsterSettings = {
-    headers: {
+    headers?: {
         [key: string]: string
-    }
+    },
 };
 
 export interface ReqsterResponse {
