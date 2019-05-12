@@ -33,6 +33,8 @@ api.interceptors.request.use(async (endpoint, settings) => {
 For example, let's re-try request when response's status = 555:
 
 ```js
+import {ResponseInterceptorResultEnum} from '@reqster/core';
+
 api.interceptors.response.use(async (endpoint, settings, response) => {
     if (response.status === 555) {
         return ResponseInterceptorResultEnum.RETRY;
