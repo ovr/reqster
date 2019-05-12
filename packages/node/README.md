@@ -1,2 +1,2 @@
-# @reqster/fetch
+# @reqster/node
 
