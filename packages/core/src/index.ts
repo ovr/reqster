@@ -1,9 +1,15 @@
 import {ResponseInterceptorResultEnum, InterceptorsManager, RequestInterceptor, ResponseInterceptor} from './interceptors';
 
 export interface ReqsterRequestSettings {
-    method?: string;
-    data?: any
+    headers?: {
+        [key: string]: string
+    },
 }
+
+export type ReqsterRequestDirectSettings = ReqsterRequestSettings & {
+    method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'OPTIONS';
+    data?: any
+};
 
 export type ReqsterSettings = {
     headers: {
@@ -30,7 +36,7 @@ class Client {
     };
 
     constructor(
-        protected executor: (url: string, settings: ReqsterSettings & ReqsterRequestSettings) => Promise<ReqsterResponse>,
+        protected executor: (url: string, settings: ReqsterSettings & ReqsterRequestDirectSettings) => Promise<ReqsterResponse>,
         protected url: string,
         protected settings: ReqsterSettings
     ) {}
@@ -39,7 +45,7 @@ class Client {
         return this.url + endpoint;
     }
 
-    public async request<T = any>(endpoint: string, settings: ReqsterRequestSettings): Promise<T> {
+    public async request<T = any>(endpoint: string, settings: ReqsterRequestDirectSettings): Promise<T> {
         const url =  this.prepareUrl(endpoint);
         const parameters = {
             ...this.settings,

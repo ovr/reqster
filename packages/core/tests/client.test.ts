@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {Client, getDefaultClientSettings, ReqsterRequestSettings, ReqsterResponse, ReqsterSettings} from "../src";
+import {Client, getDefaultClientSettings, ReqsterRequestDirectSettings, ReqsterResponse, ReqsterSettings} from "../src";
 
 class FakeResponse implements ReqsterResponse {
     public ok: boolean = true;
@@ -21,7 +21,7 @@ class FakeResponse implements ReqsterResponse {
     }
 }
 
-type Executor = (url: string, settings: ReqsterSettings & ReqsterRequestSettings) => Promise<ReqsterResponse>;
+type Executor = (url: string, settings: ReqsterSettings & ReqsterRequestDirectSettings) => Promise<ReqsterResponse>;
 
 function createTestClient(executor: Executor) {
     return new Client(
