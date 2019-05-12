@@ -29,7 +29,7 @@ class Client {
     };
 
     constructor(
-        protected executor: (url: string, init: ReqsterRequestSettings) => Promise<ReqsterResponse>,
+        protected executor: (url: string, settings: ReqsterSettings & ReqsterRequestSettings) => Promise<ReqsterResponse>,
         protected url: string,
         protected settings: ReqsterSettings
     ) {}
