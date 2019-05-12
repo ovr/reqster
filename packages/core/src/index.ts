@@ -10,6 +10,7 @@ export type ReqsterSettings = {
         [key: string]: string
     },
     timeout: number,
+    transformResponse: (response: ReqsterResponse, endpoint: string) => Promise<any>,
     validateStatus: (status: number) => boolean,
 };
 
@@ -68,16 +69,7 @@ class Client {
             };
         }
 
-        try  {
-            return await response.clone().json()
-        } catch (e) {
-            throw {
-                status: -1,
-                endpoint,
-                message: 'Bad JSON',
-                response: await response.clone().text()
-            };
-        }
+        return await this.settings.transformResponse(response, endpoint);
     }
 
     public async post<D = any, T = any>(endpoint: string, data?: D, settings?: ReqsterRequestSettings): Promise<T> {
@@ -123,6 +115,18 @@ export function getDefaultClientSettings(): ReqsterSettings {
     return {
         headers: {},
         timeout: 0,
+        transformResponse: async (response: ReqsterResponse, endpoint: string) => {
+            try  {
+                return await response.clone().json()
+            } catch (e) {
+                throw {
+                    status: -1,
+                    endpoint,
+                    message: 'Bad JSON',
+                    response: await response.clone().text()
+                };
+            }
+        },
         validateStatus: (status) => status >= 200 && status < 300
     };
 }
