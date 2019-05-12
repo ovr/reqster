@@ -16,9 +16,15 @@ export type ReqsterSettings = {
 
 export type ReqsterRequestSettings = Partial<ReqsterSettings>;
 
+export interface ReqsterResponseHeaders {
+    get(name: string): string | null;
+    has(name: string): boolean;
+}
+
 export interface ReqsterResponse {
-    ok: boolean;
-    status: number;
+    readonly ok: boolean;
+    readonly status: number;
+    readonly headers: ReqsterResponseHeaders;
 
     clone(): ReqsterResponse;
     json(): Promise<any>;

@@ -1,8 +1,26 @@
 import {assert} from 'chai';
-import {Client, getDefaultClientSettings, ReqsterRequestDirectSettings, ReqsterResponse, ReqsterSettings} from "../src";
+import {
+    Client,
+    getDefaultClientSettings,
+    ReqsterRequestDirectSettings,
+    ReqsterResponse,
+    ReqsterResponseHeaders,
+    ReqsterSettings
+} from "../src";
+
+class FakeResponseHeaders implements ReqsterResponseHeaders {
+    get(name: string): string | null {
+        return null;
+    }
+
+    has(name: string): boolean {
+        return false;
+    }
+}
 
 class FakeResponse implements ReqsterResponse {
-    public ok: boolean = true;
+    public readonly ok: boolean = true;
+    public readonly headers: ReqsterResponseHeaders = new FakeResponseHeaders();
 
     public constructor(
         public status: number
