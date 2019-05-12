@@ -1,11 +1,5 @@
 import {ResponseInterceptorResultEnum, InterceptorsManager, RequestInterceptor, ResponseInterceptor} from './interceptors';
 
-export interface ReqsterRequestSettings {
-    headers?: {
-        [key: string]: string
-    },
-}
-
 export type ReqsterRequestDirectSettings = ReqsterRequestSettings & {
     method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'OPTIONS';
     data?: any
@@ -19,6 +13,8 @@ export type ReqsterSettings = {
     transformResponse: (response: ReqsterResponse, endpoint: string) => Promise<any>,
     validateStatus: (status: number) => boolean,
 };
+
+export type ReqsterRequestSettings = Partial<ReqsterSettings>;
 
 export interface ReqsterResponse {
     ok: boolean;
