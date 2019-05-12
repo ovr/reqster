@@ -61,7 +61,7 @@ describe('Client', function() {
         });
     });
 
-    it('Simple GET', async function() {
+    it('Simple GET without params', async function() {
         const client = createTestClient(async (url, settings) => {
             assert.equal(url, 'http://localhost/v1/user');
             assert.equal(settings.method, 'GET');
@@ -70,6 +70,24 @@ describe('Client', function() {
         });
 
         const response = await client.get('/v1/user', {});
+        assert.equal(response.status, 200);
+    });
+
+    it('Simple GET with params', async function() {
+        const client = createTestClient(async (url, settings) => {
+            assert.equal(url, 'http://localhost/v1/user?a=hello&b=test&c[]=1&c[]=2&c[]=3');
+            assert.equal(settings.method, 'GET');
+
+            return new FakeResponse(200);
+        });
+
+        const response = await client.get('/v1/user', {
+            params: {
+                a: 'hello',
+                b: 'test',
+                c: [1, 2, 3]
+            }
+        });
         assert.equal(response.status, 200);
     });
 

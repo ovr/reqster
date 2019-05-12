@@ -1,20 +1,25 @@
 import {ResponseInterceptorResultEnum, InterceptorsManager, RequestInterceptor, ResponseInterceptor} from './interceptors';
 
-export type ReqsterRequestDirectSettings = ReqsterRequestSettings & {
-    method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'OPTIONS';
-    data?: any
-};
-
 export type ReqsterSettings = {
     headers: {
         [key: string]: string
     },
     timeout: number,
+    serializeParams: (parameters: { [key: string]: any }) => string,
     transformResponse: (response: ReqsterResponse, endpoint: string) => Promise<any>,
     validateStatus: (status: number) => boolean,
 };
 
-export type ReqsterRequestSettings = Partial<ReqsterSettings>;
+export type ReqsterRequestSettings = Partial<ReqsterSettings> & {
+    params?: {
+        [key: string]: any
+    },
+};
+
+export type ReqsterRequestDirectSettings = ReqsterRequestSettings & {
+    method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'OPTIONS';
+    data?: any
+};
 
 export interface ReqsterResponseHeaders {
     get(name: string): string | null;
@@ -43,12 +48,21 @@ class Client {
         protected settings: ReqsterSettings
     ) {}
 
-    protected prepareUrl(endpoint: string): string {
-        return this.url + endpoint;
+    protected prepareUrl(endpoint: string, parameters?: { [key: string]: string } ): string {
+        let url = this.url + endpoint;
+
+        if (parameters) {
+            const query = this.settings.serializeParams(parameters);
+            if (query.length) {
+                url += (url.indexOf('?') === -1 ? '?' : '&') + query;
+            }
+        }
+
+        return url;
     }
 
     public async request<T = any>(endpoint: string, settings: ReqsterRequestDirectSettings): Promise<T> {
-        const url =  this.prepareUrl(endpoint);
+        const url =  this.prepareUrl(endpoint, settings.params);
         const parameters = {
             ...this.settings,
             ...settings,
@@ -123,6 +137,25 @@ export function getDefaultClientSettings(): ReqsterSettings {
     return {
         headers: {},
         timeout: 0,
+        serializeParams: (parameters: { [key: string]: any }): string => {
+            const result = [];
+
+            for (const k in parameters) {
+                if (parameters[k] !== null) {
+                    const value = parameters[k];
+
+                    if (Array.isArray(parameters[k])) {
+                        value.forEach((v: string) => {
+                            result.push(encodeURIComponent(k) + '[]=' + encodeURIComponent(v));
+                        });
+                    } else {
+                        result.push(encodeURIComponent(k) + '=' + encodeURIComponent(value));
+                    }
+                }
+            }
+
+            return result.join('&');
+        },
         transformResponse: async (response: ReqsterResponse, endpoint: string) => {
             try  {
                 return await response.clone().json()
