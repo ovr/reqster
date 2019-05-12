@@ -6,9 +6,11 @@ export interface ReqsterRequestSettings {
 }
 
 export type ReqsterSettings = {
-    headers?: {
+    headers: {
         [key: string]: string
     },
+    timeout: number,
+    validateStatus: (status: number) => boolean,
 };
 
 export interface ReqsterResponse {
@@ -57,7 +59,7 @@ class Client {
             }
         }
 
-        if (!response.ok || response.status < 200 || response.status > 299) {
+        if (!response.ok || !this.settings.validateStatus(response.status)) {
             throw {
                 status: response.status,
                 endpoint,
@@ -115,6 +117,14 @@ class Client {
             ...settings
         });
     }
+}
+
+export function getDefaultClientSettings(): ReqsterSettings {
+    return {
+        headers: {},
+        timeout: 0,
+        validateStatus: (status) => status >= 200 && status < 300
+    };
 }
 
 export {
