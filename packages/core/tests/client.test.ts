@@ -75,7 +75,7 @@ describe('Client', function() {
 
     it('Simple GET with params', async function() {
         const client = createTestClient(async (url, settings) => {
-            assert.equal(url, 'http://localhost/v1/user?a=hello&b=test&c[]=1&c[]=2&c[]=3');
+            assert.equal(url, 'http://localhost/v1/user?str=tsc&bool=true&case[]=SEND&case[]=RECEIVED&sort[created]=-1');
             assert.equal(settings.method, 'GET');
 
             return new FakeResponse(200);
@@ -83,9 +83,15 @@ describe('Client', function() {
 
         const response = await client.get('/v1/user', {
             params: {
-                a: 'hello',
-                b: 'test',
-                c: [1, 2, 3]
+                str: 'tsc',
+                bool: true,
+                case: [
+                    'SEND',
+                    'RECEIVED'
+                ],
+                sort: {
+                    created: -1
+                },
             }
         });
         assert.equal(response.status, 200);

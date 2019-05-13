@@ -133,29 +133,37 @@ class Client {
     }
 }
 
+function serializeParams(parameters: { [key: string]: any }, path: string = ''): string {
+    const result = [];
+
+    for (const k in parameters) {
+        if (parameters[k] !== null) {
+            const value = parameters[k];
+
+            if (Array.isArray(parameters[k])) {
+                value.forEach((v: string) => {
+                    result.push(encodeURIComponent(k) + '[]=' + encodeURIComponent(v));
+                });
+            } else if (typeof value === 'object') {
+                result.push(serializeParams(value, k));
+            } else {
+                if (path) {
+                    result.push(path + '[' + encodeURIComponent(k) + ']=' + encodeURIComponent(value));
+                } else {
+                    result.push(encodeURIComponent(k) + '=' + encodeURIComponent(value));
+                }
+            }
+        }
+    }
+
+    return result.join('&');
+}
+
 export function getDefaultClientSettings(): ReqsterSettings {
     return {
         headers: {},
         timeout: 0,
-        serializeParams: (parameters: { [key: string]: any }): string => {
-            const result = [];
-
-            for (const k in parameters) {
-                if (parameters[k] !== null) {
-                    const value = parameters[k];
-
-                    if (Array.isArray(parameters[k])) {
-                        value.forEach((v: string) => {
-                            result.push(encodeURIComponent(k) + '[]=' + encodeURIComponent(v));
-                        });
-                    } else {
-                        result.push(encodeURIComponent(k) + '=' + encodeURIComponent(value));
-                    }
-                }
-            }
-
-            return result.join('&');
-        },
+        serializeParams,
         transformResponse: async (response: ReqsterResponse, endpoint: string) => {
             try  {
                 return await response.clone().json()
