@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@reqster/core": "0.3.0"
+    "@reqster/core": "0.3.1"
   },
   "devDependencies": {
     "typescript": "^3.4.5"
