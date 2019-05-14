@@ -5,7 +5,7 @@ import {
     ReqsterRequestDirectSettings,
     ReqsterResponse,
     ReqsterResponseHeaders,
-    ReqsterSettings
+    ReqsterSettings, serializeParams
 } from "../src";
 
 class FakeResponseHeaders implements ReqsterResponseHeaders {
@@ -51,6 +51,61 @@ function createTestClient(executor: Executor) {
         }
     )
 }
+
+interface SerializeParamsData {
+    params: any;
+    expected: string;
+}
+
+describe('serializeParams', function() {
+    it(`should assert`, () => {
+        const serializeParamsDataProvider: SerializeParamsData[] = [
+            {
+                params: {},
+                expected: ''
+            },
+            {
+                params: {
+                    t: true,
+                    f: false,
+                    s: 'str',
+                    a: ['TRANSFER', 'BANK_IN']
+                },
+                expected: 't=true&f=false&s=str&a[]=TRANSFER&a[]=BANK_IN'
+            },
+            {
+                params: {
+                    filter: {
+                        type: 'TRANSFER'
+                    }
+                },
+                expected: 'filter[type]=TRANSFER'
+            },
+            {
+                params: {
+                    filter: {
+                        type: ['TRANSFER', 'BANK_IN']
+                    }
+                },
+                expected: 'type[]=TRANSFER&type[]=BANK_IN'
+            },
+            {
+                params: {
+                    filter: {
+                        amount: {
+                            lte: 5
+                        }
+                    }
+                },
+                expected: 'filter[amount][lte]=5'
+            },
+        ];
+
+        for (const input of serializeParamsDataProvider) {
+            assert.equal(serializeParams(input.params), input.expected);
+        }
+    });
+});
 
 describe('Client', function() {
     it('Simple request', async function() {

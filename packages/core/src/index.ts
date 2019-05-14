@@ -133,7 +133,7 @@ class Client {
     }
 }
 
-function serializeParams(parameters: { [key: string]: any }, path: string = ''): string {
+export function serializeParams(parameters: { [key: string]: any }, path: string = ''): string {
     const result = [];
 
     for (const k in parameters) {
@@ -145,7 +145,11 @@ function serializeParams(parameters: { [key: string]: any }, path: string = ''):
                     result.push(encodeURIComponent(k) + '[]=' + encodeURIComponent(v));
                 });
             } else if (typeof value === 'object') {
-                result.push(serializeParams(value, k));
+                if (path) {
+                    result.push(serializeParams(value, path + '[' + k + ']'));
+                } else {
+                    result.push(serializeParams(value, path + k));
+                }
             } else {
                 if (path) {
                     result.push(path + '[' + encodeURIComponent(k) + ']=' + encodeURIComponent(value));
