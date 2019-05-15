@@ -66,6 +66,10 @@ class Client {
         const parameters = {
             ...this.settings,
             ...settings,
+            headers: {
+                ...this.settings.headers,
+                ...settings.headers
+            },
             body: settings.data ? JSON.stringify(settings.data) : undefined,
         };
 

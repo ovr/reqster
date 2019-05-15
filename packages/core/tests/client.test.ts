@@ -47,6 +47,12 @@ function createTestClient(executor: Executor) {
         'http://localhost',
         {
             ...getDefaultClientSettings(),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Accept-Language': 'en',
+            },
+            timeout: 5 * 1000,
             transformResponse: async (response, endpoint) => response
         }
     )
@@ -113,6 +119,29 @@ describe('Client', function() {
 
         const response = await client.request('/v1/user', {
             method: 'GET'
+        });
+    });
+
+    it('Simple request (test headers and settings override)', async function() {
+        const client = createTestClient(async (url, settings) => {
+            assert.equal(settings.timeout, -5);
+            assert.deepEqual(settings.headers, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Accept-Language': 'en',
+                'X-Sign': 'ZnNkZjMyNDIzNDNkZnNkZg=='
+
+            });
+
+            return new FakeResponse(200);
+        });
+
+        const response = await client.request('/v1/user', {
+            method: 'GET',
+            timeout: -5,
+            headers: {
+                'X-Sign': 'ZnNkZjMyNDIzNDNkZnNkZg=='
+            }
         });
     });
 
