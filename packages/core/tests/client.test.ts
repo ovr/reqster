@@ -5,9 +5,9 @@ import {
     ReqsterRequestDirectSettings,
     ReqsterResponse,
     ReqsterResponseHeaders,
-    ReqsterSettings, serializeParams
+    ReqsterSettings,
 } from "../src";
-import {BadResponse} from "../src/errors";
+import {serializeParams} from "../src/helpers";
 
 class FakeResponseHeaders implements ReqsterResponseHeaders {
     get(name: string): string | null {
