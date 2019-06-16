@@ -1,20 +1,33 @@
 import https from 'https';
-import http from 'http';
+import http, {ClientRequestArgs} from 'http';
 
 import {Client, getDefaultClientSettings, ReqsterSettings} from "@reqster/core";
 import {Response, ResponseHeaders} from "./response";
 
 const isHttps = /https:?/;
 
+export type ReqsterNodeSettings = ReqsterSettings & {
+    socketPath: null,
+};
+
 export const create = (
     url: string,
     settings: Partial<ReqsterSettings>
 ): Client => new Client(
-    (url, settings) => new Promise(
+    (url, settings: any) => new Promise(
         (resolve, reject) => {
             const agent = isHttps.test(url) ? https : http;
 
-            const request = agent.request(url, {method: settings.method, headers: settings.headers}, (res) => {
+            let options: ClientRequestArgs = {
+                method: settings.method,
+                headers: settings.headers
+            };
+
+            if (settings.socketPath) {
+                options.socketPath = settings.socketPath;
+            }
+
+            const request = agent.request(url, options, (res) => {
                 let body = '';
 
                 res.on('data', (chunk) => {
@@ -26,12 +39,14 @@ export const create = (
                 });
 
                 res.on('end', () => {
-                    resolve(new Response(
-                        true,
-                        res.statusCode || 0,
-                        body,
-                        new ResponseHeaders(<any>res.headers)
-                    ));
+                    resolve(
+                        new Response(
+                            true,
+                            res.statusCode || 0,
+                            body,
+                            new ResponseHeaders(<any>res.headers)
+                        )
+                    );
                 });
             });
 
