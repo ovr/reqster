@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "prepublishOnly": "rm -rf dist/ && npm run tsc"
   },
   "author": "",
   "license": "ISC",
