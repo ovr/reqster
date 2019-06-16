@@ -4,8 +4,32 @@
 
 ## Features
 
-- `@reqster/browser` for browser
-- `@reqster/node` for node.js
+- `@reqster/browser` for browser (using fetch)
+- `@reqster/node` for node.js (using http/https modules)
+- `@reqster/curl` for node.js (using external curl module)
+
+## Example
+
+```typescript
+import { create } from '@reqster/browser';
+
+const client = create('https://you-api.com/', {
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    },
+    timeout: 5 * 1000,
+});
+
+
+export type UserResponse = {
+    userId: string
+};
+
+export const getUser = (id: string) => client.get<UserResponse>(`'/api/v1/user/${id}`);
+
+const user = getUser('self');
+```
 
 # Interceptors
 
