@@ -1,8 +1,8 @@
-import {Client, ReqsterSettings, getDefaultClientSettings} from "@reqster/core";
+import {Client, ReqsterSettings, getDefaultClientSettings, TimeoutError} from "@reqster/core";
 
-const timeout = (ms: number, promise: Promise<any>) => new Promise(function(resolve, reject) {
+const timeout = (ms: number, promise: Promise<any>, e: TimeoutError) => new Promise(function(resolve, reject) {
     setTimeout(function() {
-        reject(new Error('Timeout'))
+        reject(e)
     }, ms);
 
     promise.then(resolve, reject);
@@ -17,7 +17,19 @@ export function create(
             const request = fetch(url, settings);
 
             if (settings.timeout > 0) {
-                timeout(settings.timeout, request);
+                timeout(
+                    settings.timeout,
+                    request,
+                    new TimeoutError(
+                        `Timeout reached after ${settings.timeout} ms`,
+                        {
+                            url,
+                            headers: settings.headers,
+                            method: <string>settings.method,
+                        },
+                        null
+                    )
+                );
             }
 
             return request;

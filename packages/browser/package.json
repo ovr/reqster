@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@reqster/core": "0.4.0"
+    "@reqster/core": "0.4.2"
   },
   "devDependencies": {
     "typescript": "^3.4.5"
