@@ -1,14 +1,14 @@
 import https from 'https';
 import http from 'http';
 
-import {Client, ReqsterSettings} from "@reqster/core";
+import {Client, getDefaultClientSettings, ReqsterSettings} from "@reqster/core";
 import {Response, ResponseHeaders} from "./response";
 
 const isHttps = /https:?/;
 
 export const create = (
     url: string,
-    settings: ReqsterSettings
+    settings: Partial<ReqsterSettings>
 ): Client => new Client(
     (url, settings) => new Promise(
         (resolve, reject) => {
@@ -39,5 +39,8 @@ export const create = (
         }
     ),
     url,
-    settings
+    {
+        ...getDefaultClientSettings(),
+        ...settings
+    }
 );
