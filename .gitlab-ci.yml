@@ -22,6 +22,7 @@ browser_adapter:
     - cd packages/browser
     - npm install
     - npm run tsc
+    - npm run test
   tags:
     - docker
 
@@ -32,6 +33,7 @@ node_adapter_11:
     - cd packages/node
     - npm install
     - npm run tsc
+    - npm run test
   tags:
     - docker
 
@@ -42,6 +44,7 @@ node_adapter_12:
     - cd packages/node
     - npm install
     - npm run tsc
+    - npm run test
   tags:
     - docker
 

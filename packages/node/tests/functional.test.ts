@@ -11,7 +11,6 @@ const client = create(
             'User-Agent': 'node.js'
         },
         timeout: 5 * 1000,
-        transformResponse: async (response, endpoint) => response
     }
 );
 
@@ -20,6 +19,7 @@ describe('Client Functional', function() {
         const response = await client.request('/users/ovr', {
             method: 'GET'
         });
-        console.log(response);
+
+        assert.equal(response.login, 'ovr');
     });
 });
