@@ -23,8 +23,8 @@ export const create = (
                 headers: settings.headers
             };
 
-            if (settings.socketPath) {
-                options.socketPath = settings.socketPath;
+            if (settings.timeout > 0) {
+                options.timeout = settings.timeout;
             }
 
             const request = agent.request(url, options, (res) => {
