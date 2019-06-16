@@ -1,4 +1,5 @@
 import {ResponseInterceptorResultEnum, InterceptorsManager, RequestInterceptor, ResponseInterceptor} from './interceptors';
+import {BadResponse} from './errors';
 
 export type ReqsterSettings = {
     headers: {
@@ -6,7 +7,7 @@ export type ReqsterSettings = {
     },
     timeout: number,
     serializeParams: (parameters: { [key: string]: any }) => string,
-    transformResponse: (response: ReqsterResponse, endpoint: string) => Promise<any>,
+    transformResponse: (response: ReqsterResponse, url: string, settings: ReqsterRequestDirectSettings) => Promise<any>,
     validateStatus: (status: number) => boolean,
 };
 
@@ -87,15 +88,23 @@ class Client {
         }
 
         if (!response.ok || !this.settings.validateStatus(response.status)) {
-            throw {
-                status: response.status,
-                endpoint,
-                message: 'Unexpected status',
-                response: await response.clone().text()
-            };
+            throw new BadResponse(
+                'Unexpected status',
+                {
+                    url,
+                    headers: parameters.headers,
+                    method: <string>parameters.method,
+                },
+                {
+                    ok: response.ok,
+                    status: response.status,
+                    headers: response.headers,
+                    content: await response.clone().text()
+                }
+            );
         }
 
-        return await this.settings.transformResponse(response, endpoint);
+        return await this.settings.transformResponse(response, url, parameters);
     }
 
     public async post<D = any, T = any>(endpoint: string, data?: D, settings?: ReqsterRequestSettings): Promise<T> {
@@ -172,16 +181,24 @@ export function getDefaultClientSettings(): ReqsterSettings {
         headers: {},
         timeout: 0,
         serializeParams,
-        transformResponse: async (response: ReqsterResponse, endpoint: string) => {
+        transformResponse: async (response, url, parameters) => {
             try  {
                 return await response.clone().json()
             } catch (e) {
-                throw {
-                    status: -1,
-                    endpoint,
-                    message: 'Bad JSON',
-                    response: await response.clone().text()
-                };
+                throw new BadResponse(
+                    'Bad JSON',
+                    {
+                        url,
+                        headers: <{[key: string]: any}>parameters.headers,
+                        method: <string>parameters.method,
+                    },
+                    {
+                        ok: response.ok,
+                        status: response.status,
+                        headers: response.headers,
+                        content: await response.clone().text()
+                    }
+                );
             }
         },
         validateStatus: (status) => status >= 200 && status < 300

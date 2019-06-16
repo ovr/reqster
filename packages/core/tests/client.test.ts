@@ -1,4 +1,4 @@
-import {assert} from 'chai';
+import {assert, expect} from 'chai';
 import {
     Client,
     getDefaultClientSettings,
@@ -7,6 +7,7 @@ import {
     ReqsterResponseHeaders,
     ReqsterSettings, serializeParams
 } from "../src";
+import {BadResponse} from "../src/errors";
 
 class FakeResponseHeaders implements ReqsterResponseHeaders {
     get(name: string): string | null {
@@ -23,7 +24,8 @@ class FakeResponse implements ReqsterResponse {
     public readonly headers: ReqsterResponseHeaders = new FakeResponseHeaders();
 
     public constructor(
-        public status: number
+        public status: number,
+        public content: string = ''
     ) {}
 
     public clone(): ReqsterResponse {
@@ -31,11 +33,11 @@ class FakeResponse implements ReqsterResponse {
     }
 
     public async text() {
-        return 'fake response';
+        return this.content;
     }
 
     public async json() {
-        throw new Error('fake');
+        return JSON.parse(this.content);
     }
 }
 
@@ -194,5 +196,23 @@ describe('Client', function() {
             field: true
         });
         assert.equal(response.status, 200);
+    });
+
+    it('Testing BadResponse on "Unexpected status"', async function() {
+        const client = createTestClient(async (url, settings) => {
+            return new FakeResponse(555, 'BAD JSON, HEHEHEHE');
+        });
+
+        let thrown = false;
+
+        try {
+            await client.get('/v1/user');
+        } catch (err) {
+            thrown = true;
+
+            assert.equal(err.message, 'Unexpected status');
+        } finally {
+            assert.equal(thrown, true, 'Exception must be thrown');
+        }
     });
 });
