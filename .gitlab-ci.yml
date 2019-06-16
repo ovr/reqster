@@ -1,0 +1,47 @@
+image: node:latest
+
+stages:
+  - core
+  - adapters
+
+core_build:
+  stage: core
+  image: node:11
+  script:
+    - cd packages/core
+    - npm install
+    - npm run tsc
+    - npm run test
+  tags:
+    - docker
+
+browser_adapter:
+  stage: adapters
+  image: node:11
+  script:
+    - cd packages/browser
+    - npm install
+    - npm run tsc
+  tags:
+    - docker
+
+node_adapter_11:
+  stage: adapters
+  image: node:11
+  script:
+    - cd packages/node
+    - npm install
+    - npm run tsc
+  tags:
+    - docker
+
+node_adapter_12:
+  stage: adapters
+  image: node:11
+  script:
+    - cd packages/node
+    - npm install
+    - npm run tsc
+  tags:
+    - docker
+
