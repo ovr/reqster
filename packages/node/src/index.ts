@@ -1,11 +1,26 @@
-import {Client, ReqsterResponse, ReqsterSettings, ReqsterRequestSettings} from "@reqster/core";
+import {Client, ReqsterResponse, ReqsterSettings, ReqsterRequestSettings, ReqsterResponseHeaders} from "@reqster/core";
 import https from 'https';
+
+class ResponseHeaders implements ReqsterResponseHeaders {
+    constructor(
+        protected readonly headers: {[key: string]: string}
+    ) {}
+
+    get(name: string): string | null {
+        return this.headers[name];
+    }
+
+    has(name: string): boolean {
+        return this.headers.hasOwnProperty(name);
+    }
+}
 
 class Response implements ReqsterResponse {
     public constructor(
         public ok: boolean,
         public status: number,
         public body: string,
+        public headers: ResponseHeaders
     ) {}
 
     public clone() {
@@ -43,7 +58,8 @@ export function create(
                         resolve(new Response(
                             true,
                             res.statusCode || 0,
-                            body
+                            body,
+                            new ResponseHeaders({})
                         ));
                     });
                 });
