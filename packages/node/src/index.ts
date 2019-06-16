@@ -28,11 +28,11 @@ class Response implements ReqsterResponse {
     }
 
     public async text(): Promise<string> {
-        throw new Error('Unimplemented');
+        return this.body;
     }
 
     public async json(): Promise<any> {
-        throw new Error('Unimplemented');
+        return JSON.parse(this.body);
     }
 }
 
