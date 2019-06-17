@@ -5,13 +5,21 @@ import {
     ResponseInterceptorResultEnum
 } from './interceptors';
 import {BadResponse} from './errors';
-import {serializeParams, SerializeParamsFn, transformResponse, TransformResponseFn} from "./helpers";
+import {
+    serializeParams,
+    SerializeParamsFn,
+    transformRequest,
+    TransformRequestFn,
+    transformResponse,
+    TransformResponseFn
+} from "./helpers";
 import {HeadersBag, QueryBag, ReqsterResponse} from "./types";
 
 export type ReqsterSettings = {
     headers: HeadersBag,
     timeout: number,
     serializeParams: SerializeParamsFn,
+    transformRequest: TransformRequestFn,
     transformResponse: TransformResponseFn,
     validateStatus: (status: number) => boolean,
 };
@@ -52,16 +60,18 @@ export class Client {
     }
 
     public async request<T = any>(endpoint: string, settings: ReqsterRequestDirectSettings): Promise<T> {
-        const url =  this.prepareUrl(endpoint, settings.params);
         const parameters = {
             ...this.settings,
             ...settings,
             headers: {
                 ...this.settings.headers,
                 ...settings.headers
-            },
-            body: settings.data ? JSON.stringify(settings.data) : undefined,
+            }
         };
+
+        (<any>parameters).body = this.settings.transformRequest(settings.data, parameters.headers);
+
+        const url =  this.prepareUrl(endpoint, settings.params);
 
         for (const before of this.interceptors.request.interceptors) {
             await before(url, parameters);
@@ -141,6 +151,7 @@ export function getDefaultClientSettings(): ReqsterSettings {
         timeout: 0,
         serializeParams,
         transformResponse,
+        transformRequest,
         validateStatus: (status) => status >= 200 && status < 300
     };
 }

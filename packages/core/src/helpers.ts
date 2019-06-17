@@ -3,6 +3,7 @@ import {HeadersBag, QueryBag, ReqsterRequestDirectSettings, ReqsterResponse} fro
 
 export type SerializeParamsFn = (parameters: QueryBag) => string;
 export type TransformResponseFn = (response: ReqsterResponse, url: string, settings: ReqsterRequestDirectSettings) => Promise<any>;
+export type TransformRequestFn = (data: any, headers: HeadersBag) => any;
 
 export const serializeParams = (parameters: QueryBag, path: string = ''): string => {
     const result = [];
@@ -53,4 +54,19 @@ export const transformResponse: TransformResponseFn = async (response, url, para
             }
         );
     }
+};
+
+function setHeaderIfUnset(headers: HeadersBag, key: string, value: string) {
+    if (!headers.hasOwnProperty(headers[key])) {
+        headers[key] = value;
+    }
+}
+
+export const transformRequest: TransformRequestFn = (data, headers) => {
+    if (data) {
+        setHeaderIfUnset(headers, 'Content-Type', 'application/json;charset=utf-8');
+        return JSON.stringify(data);
+    }
+
+    return data;
 };
