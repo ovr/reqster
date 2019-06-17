@@ -27,6 +27,10 @@ export const create = (
                 options.timeout = settings.timeout;
             }
 
+            if (settings.socketPath > 0) {
+                options.socketPath = settings.socketPath;
+            }
+
             const request = agent.request(url, options, (res) => {
                 let body = '';
 

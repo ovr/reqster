@@ -26,6 +26,17 @@ browser_adapter:
   tags:
     - docker
 
+node_adapter_10:
+  stage: adapters
+  image: node:10
+  script:
+    - cd packages/node
+    - npm install
+    - npm run tsc
+    - npm run test
+  tags:
+    - docker
+
 node_adapter_11:
   stage: adapters
   image: node:11
@@ -39,7 +50,7 @@ node_adapter_11:
 
 node_adapter_12:
   stage: adapters
-  image: node:11
+  image: node:12
   script:
     - cd packages/node
     - npm install
