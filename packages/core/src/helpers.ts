@@ -1,10 +1,10 @@
 import {BadResponse} from "./errors";
-import {ReqsterRequestDirectSettings, ReqsterResponse} from "./index";
+import {HeadersBag, QueryBag, ReqsterRequestDirectSettings, ReqsterResponse} from "./index";
 
-export type SerializeParamsFn = (parameters: { [key: string]: any }) => string;
+export type SerializeParamsFn = (parameters: QueryBag) => string;
 export type TransformResponseFn = (response: ReqsterResponse, url: string, settings: ReqsterRequestDirectSettings) => Promise<any>;
 
-export const serializeParams = (parameters: { [key: string]: any }, path: string = ''): string => {
+export const serializeParams = (parameters: QueryBag, path: string = ''): string => {
     const result = [];
 
     for (const k in parameters) {
@@ -42,13 +42,13 @@ export const transformResponse: TransformResponseFn = async (response, url, para
             'Bad JSON',
             {
                 url,
-                headers: <{[key: string]: any}>parameters.headers,
+                headers: <HeadersBag>parameters.headers,
                 method: <string>parameters.method,
             },
             {
                 ok: response.ok,
                 status: response.status,
-                headers: response.headers,
+                headers: response.headers.all(),
                 content: await response.clone().text()
             }
         );

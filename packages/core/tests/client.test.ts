@@ -1,7 +1,7 @@
 import {assert} from 'chai';
 import {
     Client,
-    getDefaultClientSettings,
+    getDefaultClientSettings, HeadersBag,
     ReqsterRequestDirectSettings,
     ReqsterResponse,
     ReqsterResponseHeaders,
@@ -16,6 +16,10 @@ class FakeResponseHeaders implements ReqsterResponseHeaders {
 
     has(name: string): boolean {
         return false;
+    }
+
+    all(): HeadersBag {
+        return {}
     }
 }
 

@@ -1,14 +1,15 @@
+import {HeadersBag} from "./types";
 
 interface RequestDebugInformation {
     readonly url: string;
-    readonly headers: {[key: string]: any};
+    readonly headers: HeadersBag;
     readonly method: string;
 }
 
 interface ResponseDebugInformation {
     readonly ok: boolean;
     readonly status: number;
-    readonly headers: {[key: string]: any};
+    readonly headers: HeadersBag;
     readonly content: string;
 }
 

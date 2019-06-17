@@ -6,12 +6,10 @@ import {
 } from './interceptors';
 import {BadResponse} from './errors';
 import {serializeParams, SerializeParamsFn, transformResponse, TransformResponseFn} from "./helpers";
-import {ReqsterResponse} from "./types";
+import {HeadersBag, QueryBag, ReqsterResponse} from "./types";
 
 export type ReqsterSettings = {
-    headers: {
-        [key: string]: string
-    },
+    headers: HeadersBag,
     timeout: number,
     serializeParams: SerializeParamsFn,
     transformResponse: TransformResponseFn,
@@ -19,9 +17,7 @@ export type ReqsterSettings = {
 };
 
 export type ReqsterRequestSettings = Partial<ReqsterSettings> & {
-    params?: {
-        [key: string]: any
-    },
+    params?: QueryBag,
 };
 
 export type ReqsterRequestDirectSettings = ReqsterRequestSettings & {
@@ -42,7 +38,7 @@ export class Client {
         protected settings: ReqsterSettings
     ) {}
 
-    protected prepareUrl(endpoint: string, parameters?: { [key: string]: string } ): string {
+    protected prepareUrl(endpoint: string, parameters?: QueryBag ): string {
         let url = this.url + endpoint;
 
         if (parameters) {
@@ -91,7 +87,7 @@ export class Client {
                 {
                     ok: response.ok,
                     status: response.status,
-                    headers: response.headers,
+                    headers: response.headers.all(),
                     content: await response.clone().text()
                 }
             );
