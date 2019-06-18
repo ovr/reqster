@@ -103,7 +103,7 @@ export class Client {
             );
         }
 
-        return await this.settings.transformResponse(response, url, parameters);
+        return this.settings.transformResponse(response, url, parameters);
     }
 
     public async post<D = any, T = any>(endpoint: string, data?: D, settings?: ReqsterRequestSettings): Promise<T> {
