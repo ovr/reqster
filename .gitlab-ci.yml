@@ -12,6 +12,8 @@ core_build:
     - npm install
     - npm run tsc
     - npm run test
+    - npm install codecov -g
+    - codecov
   tags:
     - docker
 
