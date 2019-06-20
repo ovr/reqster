@@ -1,6 +1,6 @@
 import {assert} from 'chai';
 import {
-    Client,
+    Client, ExecutorFn,
     getDefaultClientSettings, HeadersBag,
     ReqsterRequestDirectSettings,
     ReqsterResponse,
@@ -45,9 +45,7 @@ class FakeResponse implements ReqsterResponse {
     }
 }
 
-type Executor = (url: string, settings: ReqsterSettings & ReqsterRequestDirectSettings) => Promise<ReqsterResponse>;
-
-function createTestClient(executor: Executor) {
+function createTestClient(executor: ExecutorFn) {
     return new Client(
         executor,
         'http://localhost',

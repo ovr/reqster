@@ -33,6 +33,8 @@ export type ReqsterRequestDirectSettings = ReqsterRequestSettings & {
     data?: any
 };
 
+export type ExecutorFn = (url: string, settings: ReqsterSettings & ReqsterRequestDirectSettings) => Promise<ReqsterResponse>;
+
 export class Client {
     public readonly interceptors = {
         request: new InterceptorsManager<RequestInterceptor>(),
@@ -40,7 +42,7 @@ export class Client {
     };
 
     constructor(
-        protected executor: (url: string, settings: ReqsterSettings & ReqsterRequestDirectSettings) => Promise<ReqsterResponse>,
+        protected executor: ExecutorFn,
         protected url: string,
         protected settings: ReqsterSettings
     ) {}
