@@ -4,7 +4,11 @@
 
 ## Features
 
-- `@reqster/browser` for browser (using fetch)
+![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline/ovr/reqster.svg)
+[![codecov](https://codecov.io/gh/ovr/reqster/branch/master/graph/badge.svg)](https://codecov.io/gh/ovr/reqster)
+![GitHub](https://img.shields.io/github/license/ovr/reqster.svg)
+
+- `@reqster/browser` for browser (using fetch) [![](https://badgen.net/bundlephobia/minzip/@reqster/browser)](https://bundlephobia.com/result?p=@reqster/browser)
 - `@reqster/node` for node.js (using http/https modules)
 - `@reqster/curl` for node.js (using external curl module)
 
@@ -67,3 +71,9 @@ api.interceptors.response.use(async (endpoint, settings, response) => {
     return ResponseInterceptorResultEnum.NOTHING;
 });
 ```
+
+### LICENSE
+
+This project is open-sourced software licensed under the MIT License.
+
+See the [LICENSE](LICENSE) file for more information.
