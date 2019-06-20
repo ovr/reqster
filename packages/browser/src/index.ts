@@ -32,7 +32,7 @@ export function create(
                 );
             }
 
-            return request;
+            return <any>request;
         },
         url,
         {
