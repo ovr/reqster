@@ -29,10 +29,9 @@ export type ReqsterRequestSettings = Partial<ReqsterSettings> & {
 };
 
 export type ReqsterRequestDirectSettings = ReqsterRequestSettings & {
-    method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'OPTIONS';
+    method: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'OPTIONS';
     data?: any
 };
-
 
 export class Client {
     public readonly interceptors = {
