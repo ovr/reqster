@@ -28,10 +28,16 @@ export type ReqsterRequestSettings = Partial<ReqsterSettings> & {
     params?: QueryBag,
 };
 
-export type ReqsterRequestDirectSettings = ReqsterRequestSettings & {
-    method: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'OPTIONS';
+export type RequestWithoutPayload = {
+    method: 'GET' | 'HEAD';
+};
+
+export type RequestWithPayload = {
+    method: 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'OPTIONS';
     data?: any
 };
+
+export type ReqsterRequestDirectSettings = ReqsterRequestSettings & (RequestWithoutPayload | RequestWithPayload);
 
 export type ExecutorFn = (url: string, settings: ReqsterSettings & ReqsterRequestDirectSettings) => Promise<ReqsterResponse>;
 
