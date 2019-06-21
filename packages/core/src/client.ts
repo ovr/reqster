@@ -76,7 +76,9 @@ export class Client {
             }
         };
 
-        (<any>parameters).body = this.settings.transformRequest(settings.data, parameters.headers);
+        if (!['GET', 'HEAD'].includes(parameters.method.toUpperCase())) {
+            (<any>parameters).body = this.settings.transformRequest((<any>settings).data, parameters.headers);
+        }
 
         const url =  this.prepareUrl(endpoint, settings.params);
 
