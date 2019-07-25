@@ -106,7 +106,7 @@ export class Client {
                 {
                     ok: response.ok,
                     status: response.status,
-                    headers: response.headers.all(),
+                    headers: <HeadersBag>(<unknown>response.headers),
                     content: await response.clone().text()
                 }
             );

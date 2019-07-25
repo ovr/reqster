@@ -1,25 +1,25 @@
 import {assert} from 'chai';
 import {
     Client, ExecutorFn,
-    getDefaultClientSettings, HeadersBag,
-    ReqsterRequestDirectSettings,
+    getDefaultClientSettings,
     ReqsterResponse,
     ReqsterResponseHeaders,
-    ReqsterSettings,
 } from "../src";
 import {serializeParams} from "../src/helpers";
 
 class FakeResponseHeaders implements ReqsterResponseHeaders {
+    public constructor(init?: HeadersInit) {
+        if (init) {
+            Object.assign(this, init);
+        }
+    }
+
     get(name: string): string | null {
         return null;
     }
 
     has(name: string): boolean {
         return false;
-    }
-
-    all(): HeadersBag {
-        return {}
     }
 }
 
